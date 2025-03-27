@@ -1,0 +1,128 @@
+{
+  "name": "@joyday/vue-loop-scroll",
+  "private": false,
+  "version": "1.0.0",
+  "description": "A high-performance Vue component for loop scrolling, supporting large data sets, adaptive resizing, real-time data updates, and flexible scrolling controls.",
+  "keywords": [
+    "vue",
+    "vue3",
+    "auto-scroll",
+    "loop-scroll",
+    "marquee",
+    "seamless-scroll",
+    "scrolling",
+    "continuous-scroll",
+    "vue-component"
+  ],
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "pub:changeset": "pnpm changeset",
+    "pub:build": "pnpm run typecheck  && pnpm run test --run && pnpm run build:vite",
+    "pub:alpha": "pnpm changeset pre enter alpha",
+    "pub:beta": "pnpm changeset pre enter beta",
+    "pub:rc": "pnpm changeset pre enter rc",
+    "pub:exit-pre": "pnpm changeset pre exit",
+    "pub:version": "pnpm changeset version",
+    "pub:release": "pnpm changeset publish",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint --fix --ext .ts,.vue ./lib",
+    "test": "vitest",
+    "build:vite": "vue-tsc -p ./tsconfig.json && vite build",
+    "prepare": "husky"
+  },
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "umd": "./dist/umd/index.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "author": "David Zheng<https://github.com/zm8>",
+  "homepage": "https://github.com/joydayX/vue-loop-scroll",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joydayX/vue-loop-scroll.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joydayX/vue-loop-scroll/issues"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,vue}": [
+      "eslint --fix"
+    ],
+    "*.css": [
+      "stylelint --fix"
+    ],
+    "*.md": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && pnpm cz --hook || true"
+    }
+  },
+  "packageManager": "pnpm@7.15.0",
+  "license": "MIT",
+  "peerDependencies": {
+    "vue": ">=3.0.0"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.28.1",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@eslint/js": "^9.22.0",
+    "@types/node": "^22.13.10",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.1.2",
+    "@vue/test-utils": "^2.4.6",
+    "@vue/tsconfig": "^0.7.0",
+    "commitizen": "^4.3.1",
+    "commitlint": "^19.8.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-vue": "^10.0.0",
+    "globals": "^16.0.0",
+    "happy-dom": "^17.4.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.0",
+    "postcss": "^8.5.3",
+    "postcss-html": "^1.8.0",
+    "postcss-lit": "^1.2.0",
+    "prettier": "3.5.3",
+    "stylelint": "^16.16.0",
+    "stylelint-config-recess-order": "^6.0.0",
+    "stylelint-config-recommended-scss": "^14.1.0",
+    "stylelint-config-recommended-vue": "^1.6.0",
+    "stylelint-config-standard": "^37.0.0",
+    "stylelint-config-standard-scss": "^14.0.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.26.1",
+    "vite": "^6.2.0",
+    "vite-plugin-dts": "^4.5.3",
+    "vite-plugin-lib-inject-css": "^2.2.1",
+    "vitest": "^3.0.9",
+    "vue": "^3.5.13",
+    "vue-eslint-parser": "^10.1.1",
+    "vue-tsc": "^2.2.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
