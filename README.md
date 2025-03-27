@@ -19,7 +19,7 @@
 
 ## Documentation
 
-<https://joydayX.github.io/site-vue-loop-scroll/>
+<https://joydayX.github.io/website-vue-loop-scroll/>
 
 ## 📦 Install
 
