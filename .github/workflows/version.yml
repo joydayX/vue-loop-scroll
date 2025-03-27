@@ -1,0 +1,53 @@
+# 工作流名称
+name: Version
+
+# 当推送到 release/ 开头的分支时触发
+on:
+  push:
+    branches:
+      - release/**
+  workflow_dispatch:  # 允许手动触发
+
+# 授予工作流权限
+permissions: write-all
+
+# 工作流任务
+jobs:
+  version:  # 任务ID
+    name: Version
+    runs-on: ubuntu-latest # 运行环境
+
+    strategy:
+      matrix:
+        node-version: [18] # Node 环境版本
+
+    # 执行步骤
+    steps:
+      # 1. 检出代码
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+
+      # 2. 安装 pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      # 3. 设置 Node.js 环境
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      # 4. 安装项目依赖
+      - name: Install Dependencies
+        run: pnpm install
+
+      # 5. 创建版本更新 PR
+      - name: Create Release Pull Request
+        uses: changesets/action@v1
+        with:
+          version: pnpm run pub:version     # 自定义版本命令
+          commit: 'chore: update versions'  # 提交信息
+          title: 'chore: update versions'   # PR 标题
+        env: # 环境变量
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
