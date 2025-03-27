@@ -2,7 +2,10 @@
   "mode": "pre",
   "tag": "rc",
   "initialVersions": {
-    "@joyday/vue-loop-scroll": "1.0.0"
+    "@joyday/vue-loop-scroll": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "few-cities-eat",
+    "two-emus-shout"
+  ]
 }
