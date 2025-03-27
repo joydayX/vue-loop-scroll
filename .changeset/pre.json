@@ -5,6 +5,7 @@
     "@joyday/vue-loop-scroll": "0.0.0"
   },
   "changesets": [
-    "few-cities-eat"
+    "few-cities-eat",
+    "two-emus-shout"
   ]
 }
