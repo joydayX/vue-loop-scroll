@@ -1,5 +1,11 @@
 # @joyday/vue-loop-scroll
 
+## 1.0.2
+
+### Patch Changes
+
+- fde1c8d: Update README.md
+
 ## 1.0.1
 
 ### Patch Changes

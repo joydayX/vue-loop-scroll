@@ -24,7 +24,7 @@
 ## 📦 安装
 
 ```bash
-pnpm i vue-loop-scroll
+pnpm i @joyday/vue-loop-scroll
 ```
 
 ## 🦄 使用
