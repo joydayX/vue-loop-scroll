@@ -57,4 +57,19 @@ export interface ScrollProps<T, K extends keyof T> {
    * @defaultValue 10
    */
   loadCount?: number;
+
+  /**
+   * 滚动模式
+   * single 一次滚动1行
+   * page 一次滚动一页
+   * @defaultValue single
+   */
+  mode?: "page" | "single"
+
+  /**
+   * 滚动模式 page 下滚动页数 
+   * @defaultValue 1
+   */
+  pageSize?: number
+
 }

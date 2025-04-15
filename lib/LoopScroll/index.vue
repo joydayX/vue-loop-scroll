@@ -34,6 +34,8 @@ const props = withDefaults(defineProps<ScrollProps<T, K>>(), {
   waitTime: 0, // 等待时间, 初始值: 0
   pausedOnHover: true, // 鼠标悬停时暂停, 初始值: true
   loadCount: 1, // 加载数量, 初始值: 1
+  mode: "single",
+  pageSize: 1
 });
 
 /* -------------------------------- DOM 引用 -------------------------------- */
@@ -118,8 +120,16 @@ const transformStyle = computed(() => {
   return { transform: `translate3D(${translate})` };
 });
 
-/** 判断是否需要暂停滚动 */
-const shouldPause = computed(() => props.waitTime > 0);
+/** 如果是翻页滚动，根据 pageSize 来确定是否停止 */
+const pageInnerCount = ref(0);
+
+/** 判断是否需要暂停滚动, 根据滚动条目确定是否暂停 */
+const shouldPause = computed(() => {
+  if (props.mode === "page") {
+    return props.waitTime > 0 && pageInnerCount.value >= props.pageSize
+  }
+  return props.waitTime > 0
+});
 
 /* ------------------------------ hook ------------------------------ */
 /** 带取消功能的 nextTick */
@@ -591,8 +601,17 @@ const startScrollAnimation = async (initialPause = true) => {
       }
     }
 
+    /** 如果为 page 模式时，页面滚动数量加 1 */
+    if (hasCrossedItem && props.mode === 'page') {
+      pageInnerCount.value += 1;
+    }
+
     // 处理暂停时的位置校准
     if (hasCrossedItem && shouldPause.value) {
+      // 当暂停时，如果为 page 模式，将 pageInnerCount 置为 0
+      if (props.mode === 'page') {
+        pageInnerCount.value = 0;
+      }
       const cancelled = await startDelayedWait();
       if (cancelled) return;
     }
