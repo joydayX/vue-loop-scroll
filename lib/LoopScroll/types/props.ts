@@ -39,6 +39,13 @@ export interface ScrollProps<T, K extends keyof T> {
    */
   speed?: number;
 
+  /**
+   * 配合 waitTime 使用，控制滚动后是否暂停的模式：
+   * - 'item'：每滚动一条等待(默认)
+   * - 'page'：每滚动一页（等于可视条数）等待
+   */
+  waitMode?: "item" | "page";
+
   /**​
    * 滚动暂停时间（毫秒）
    * @defaultValue 0（不暂停）

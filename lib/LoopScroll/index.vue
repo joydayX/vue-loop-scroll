@@ -31,6 +31,7 @@ import type {
 const props = withDefaults(defineProps<ScrollProps<T, K>>(), {
   direction: "up", // 滚动方向, 可选值: "up" | "down" | "left" | "right"
   speed: 1, // 滚动速度, 初始值: 1
+  waitMode: "item", // 控制滚动后是否暂停的模式, 可选值: "item" | "page"
   waitTime: 0, // 等待时间, 初始值: 0
   pausedOnHover: true, // 鼠标悬停时暂停, 初始值: true
   loadCount: 1, // 加载数量, 初始值: 1
@@ -72,6 +73,7 @@ const scrollMetrics = reactive({
 /** 初始化滚动状态 */
 const initState = {
   scrollOffset: 0, // 当前滚动偏移量（像素）
+  scrollOffsetInPageMode: 0, // page 模式下的滚动量
   isScrolling: false, // 滚动动画状态标识
   isPaused: false, // 是否暂停
 };
@@ -483,18 +485,21 @@ const loadDataBatch = async (
  */
 
 const startScrollAnimation = async (initialPause = true) => {
+  // 设置为正在滚动的状态
   state.isScrolling = true;
 
-  // 当前帧滚动量的范围，大于等于1，小于等于 "可视区域内容" 的尺寸
+  // 计算当前帧的滚动量，范围从1到视口大小（viewportSize）
   const frameOffset = Math.max(
     Math.min(STEP_SIZE * props.speed, viewportSize.value),
     1,
   );
 
+  // 如果当前处于暂停状态，直接返回
   if (state.isPaused) return;
 
   /**
    * 查找下一个滚动基准项
+   * 通过计算当前滚动量与项的尺寸来判断是否越过了某个项的边界。
    * @param scrollAmount - 当前滚动量
    * @param startIndex - 起始查找索引
    * @returns 包含越界信息和下一个基准项的元数据
@@ -502,40 +507,43 @@ const startScrollAnimation = async (initialPause = true) => {
   const findNextScrollPosition = (scrollAmount: number, startIndex: number) => {
     const totalItems = itemPositions.length;
     const getItemDimension = (item: ItemPositions[number]) =>
-      isVertical.value ? item.height : item.width;
+      isVertical.value ? item.height : item.width; // 获取项的尺寸，根据方向判断宽高
 
-    let currentIndex = startIndex;
-    let accumulatedSize = 0;
-    let retryCounter = 0;
-    const MAX_ERROR_RETRY = props.dataSource.length;
+    let currentIndex = startIndex; // 当前项的索引
+    let accumulatedSize = 0; // 累积的尺寸
+    let retryCounter = 0; // 防止死循环的重试计数器
+    const MAX_ERROR_RETRY = props.dataSource.length; // 最大重试次数，防止死循环
 
     while (true) {
-      // 防止异常, 造成死循环
+      // 防止异常或死循环，超过最大重试次数则退出
       if (retryCounter++ > MAX_ERROR_RETRY) {
         break;
       }
 
       const currentItemSize = getItemDimension(itemPositions[currentIndex]);
-      accumulatedSize += currentItemSize;
+      accumulatedSize += currentItemSize; // 累加当前项的尺寸
 
-      const nextIndex = (currentIndex + 1) % totalItems;
+      const nextIndex = (currentIndex + 1) % totalItems; // 下一个项的索引，循环获取
 
       const nextItemThreshold =
-        accumulatedSize + getItemDimension(itemPositions[nextIndex]);
+        accumulatedSize + getItemDimension(itemPositions[nextIndex]); // 下一个项的阈值
 
-      // 判断是否越界到下一项
+      // 判断当前滚动量是否已越界
       if (scrollAmount < accumulatedSize) {
-        break;
+        break; // 如果滚动量小于当前项的累计尺寸，退出循环
       } else if (scrollAmount < nextItemThreshold) {
+        // 如果滚动量介于当前项与下一个项之间，返回下一个项的信息
         return {
           hasCrossedItem: true,
           nextItemIndex: nextIndex,
-          remainingOffset: scrollAmount - accumulatedSize,
+          remainingOffset: scrollAmount - accumulatedSize, // 返回剩余的偏移量
         };
       }
 
-      currentIndex = nextIndex;
+      currentIndex = nextIndex; // 更新当前项的索引
     }
+
+    // 如果没有越界，返回初始项和剩余的滚动量
     return {
       hasCrossedItem: false,
       nextItemIndex: startIndex,
@@ -543,42 +551,63 @@ const startScrollAnimation = async (initialPause = true) => {
     };
   };
 
-  // 滚动状态跟踪
+  // 初始状态下，通过滚动偏移量获取下一个滚动基准项
   let { remainingOffset: accumulatedOffset, nextItemIndex: currentItemIndex } =
     findNextScrollPosition(state.scrollOffset, 0);
 
   /**
    * 执行单步滚动动画
+   * 该函数会执行一次滚动操作并更新相关状态
    */
   const performScrollStep = async () => {
+    // 更新当前的滚动偏移量
     state.scrollOffset += frameOffset;
     accumulatedOffset += frameOffset;
+    state.scrollOffsetInPageMode += frameOffset;
 
-    // 检测滚动越界
+    // 检测是否越过了某个项的边界，返回是否越界、剩余偏移量和下一个项的索引
     const { hasCrossedItem, remainingOffset, nextItemIndex } =
       findNextScrollPosition(accumulatedOffset, currentItemIndex);
 
     if (hasCrossedItem) {
+      // 更新当前项的索引和累计的偏移量
       currentItemIndex = nextItemIndex;
       accumulatedOffset = remainingOffset;
-      if (shouldPause.value) {
+
+      // 判断是否需要调整项偏移（在“项模式”下）或页面偏移（在“页面模式”下）
+      const shouldAdjustOffsetInItemMode =
+        props.waitMode === "item" && shouldPause.value;
+      const shouldAdjustOffsetInPageMode =
+        props.waitMode === "page" &&
+        shouldPause.value &&
+        state.scrollOffsetInPageMode >= viewportSize.value;
+
+      if (shouldAdjustOffsetInItemMode || shouldAdjustOffsetInPageMode) {
+        // 如果需要调整偏移量，则回退
         accumulatedOffset -= remainingOffset;
         state.scrollOffset -= remainingOffset;
       }
+
+      // 如果在“页面模式”下，调整页面的偏移量
+      if (shouldAdjustOffsetInPageMode) {
+        state.scrollOffsetInPageMode -= remainingOffset;
+      }
     }
 
-    // 处理完整滚出视口的项
+    // 如果当前滚动位置已经超过视口大小，开始处理视口之外的项
     if (state.scrollOffset >= viewportSize.value) {
+      // 根据滚动方向决定移除的项
       const activeScrollItems = isForward.value
-        ? scrollItems.value.slice(currentItemIndex) // 正向：移除已过项
-        : scrollItems.value.slice(0, -currentItemIndex); // 反向：截断末尾
+        ? scrollItems.value.slice(currentItemIndex) // 正向滚动：移除已滚出的项
+        : scrollItems.value.slice(0, -currentItemIndex); // 反向滚动：截断末尾的项
 
+      // 获取当前滚动项的位置信息
       const trackedItemPositions = itemPositions.slice(currentItemIndex);
       const trackedContentSize = calculateItemsTotalSize(trackedItemPositions);
       const bufferRequirement =
         viewportSize.value * 2 - (trackedContentSize - accumulatedOffset);
 
-      // 预加载下一批数据
+      // 如果需要预加载更多项，异步加载下一批数据
       if (bufferRequirement > 0) {
         scrollItems.value = activeScrollItems;
         itemPositions = trackedItemPositions;
@@ -591,31 +620,47 @@ const startScrollAnimation = async (initialPause = true) => {
       }
     }
 
-    // 处理暂停时的位置校准
-    if (hasCrossedItem && shouldPause.value) {
+    // 判断是否需要在“项模式”或“页面模式”下暂停滚动，并调整位置
+    const shouldPauseInItemMode =
+      props.waitMode === "item" && hasCrossedItem && shouldPause.value;
+    const shouldPauseInPageMode =
+      props.waitMode === "page" &&
+      hasCrossedItem &&
+      state.scrollOffsetInPageMode >= viewportSize.value &&
+      shouldPause.value;
+
+    if (shouldPauseInPageMode) {
+      // 如果是页面模式，滚动偏移量重置为0
+      state.scrollOffsetInPageMode = 0;
+    }
+
+    // 如果需要暂停，则调用延迟等待函数，停止滚动直到等待完成
+    if (shouldPauseInItemMode || shouldPauseInPageMode) {
       const cancelled = await startDelayedWait();
       if (cancelled) return;
     }
 
-    // 请求下一帧时包裹成 Promise, 这样能捕获到异常。
+    // 请求下一帧进行滚动，并包裹成 Promise 以便捕获异常
     await new Promise<void>((resolve, reject) => {
       animationFrameId = requestAnimationFrame(async () => {
         try {
+          // 递归调用滚动步骤，保持滚动流畅
           await performScrollStep();
           resolve();
         } catch (e: any) {
-          reject(e);
+          reject(e); // 如果发生错误，捕获并拒绝 Promise
         }
       });
     });
   };
 
-  // 初始等待逻辑
+  // 如果需要初始等待且设置了暂停，则调用延迟等待函数
   if (shouldPause.value && initialPause) {
-    const cancelled = await startDelayedWait();
-    if (cancelled) return;
+    const cancelled = await startDelayedWait(); // 启动延迟等待
+    if (cancelled) return; // 如果等待被取消，则返回
   }
 
+  // 执行单步滚动操作
   await performScrollStep();
 };
 
