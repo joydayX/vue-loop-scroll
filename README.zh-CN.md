@@ -4,10 +4,6 @@
 
 **中文** | [English](./README.md)
 
-## 🔥 自适应视口大小 & 数据动态更新
-
-![Image](https://github.com/user-attachments/assets/d35cfc49-9d91-4f09-863a-51ee45cca06a)
-
 ## 🚀 特性
 
 - 🔥 超大数据流畅滚动
@@ -24,8 +20,37 @@
 ## 📦 安装
 
 ```bash
+# npm
+npm i @joyday/vue-loop-scroll
+# pnpm
 pnpm i @joyday/vue-loop-scroll
+# yarn
+yarn add @joyday/vue-loop-scroll
 ```
+
+## 示例
+
+### 1. 四个方向滚动
+
+![Scroll in Direction Up](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%90%91%E4%B8%8A%E6%BB%9A%E5%8A%A8.gif?updatedAt=1744700804839)
+
+![Scroll in Direction Down](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%90%91%E4%B8%8B%E6%BB%9A%E5%8A%A8.gif?updatedAt=1744700865824)
+
+![Scroll in Direction Left](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%90%91%E5%B7%A6%E6%BB%9A%E5%8A%A8.gif?updatedAt=1744700825999)
+
+![Scroll in Direction Right](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%90%91%E5%8F%B3%E6%BB%9A%E5%8A%A8.gif?updatedAt=1744700866570)
+
+### 2. 滚动停顿
+
+![Step-by-Step Pause-1](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%8D%95%E6%AD%A5%E6%BB%9A%E5%8A%A8%E5%81%9C%E9%A1%BF-1.gif?updatedAt=1744700886956)
+
+![Step-by-Step Pause-2](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%8D%95%E6%AD%A5%E6%BB%9A%E5%8A%A8%E5%81%9C%E9%A1%BF-2.gif?updatedAt=1744700886365)
+
+![Step-by-Step Pause-3](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E6%BB%9A%E5%8A%A8%E5%81%9C%E9%A1%BF-%E6%8C%89%E9%A1%B5%E6%BB%9A%E5%8A%A8.gif?updatedAt=1744700948853)
+
+### 3. 自适应视口大小 & 动态数据更新
+
+![Responsive Viewport & Dynamic Data Update](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E8%87%AA%E9%80%82%E5%BA%94%E8%A7%86%E5%8F%A3%E5%A4%A7%E5%B0%8F%E5%92%8C%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0.gif?updatedAt=1744700971941)
 
 ## 🦄 使用
 

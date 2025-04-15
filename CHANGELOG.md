@@ -1,5 +1,27 @@
 # @joyday/vue-loop-scroll
 
+## 1.1.0
+
+### Minor Changes
+
+- 899a5ab: add scroll pause control by page mode
+
+### Patch Changes
+
+- 899a5ab: add scroll pause control by page mode
+
+## 1.1.0-rc.1
+
+### Patch Changes
+
+- add scroll pause control by page mode
+
+## 1.1.0-rc.0
+
+### Minor Changes
+
+- add scroll pause control by page mode
+
 ## 1.0.2
 
 ### Patch Changes

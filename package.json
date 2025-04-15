@@ -1,18 +1,17 @@
 {
   "name": "@joyday/vue-loop-scroll",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A high-performance Vue component for loop scrolling, supporting large data sets, adaptive resizing, real-time data updates, and flexible scrolling controls.",
   "keywords": [
     "vue",
-    "vue3",
-    "auto-scroll",
-    "loop-scroll",
-    "marquee",
-    "seamless-scroll",
-    "scrolling",
-    "continuous-scroll",
-    "vue-component"
+    "vuejs",
+    "ui",
+    "seamless",
+    "sroll",
+    "loop scroll",
+    "seamless scroll",
+    "vue component"
   ],
   "files": [
     "dist"
@@ -51,7 +50,7 @@
     }
   },
   "author": "David Zheng<https://github.com/zm8>",
-  "homepage": "https://github.com/joydayX/vue-loop-scroll",
+  "homepage": "https://joydayX.github.io/website-vue-loop-scroll/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joydayX/vue-loop-scroll.git"
