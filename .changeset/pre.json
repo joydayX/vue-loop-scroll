@@ -1,8 +1,11 @@
 {
-  "mode": "pre",
+  "mode": "exit",
   "tag": "rc",
   "initialVersions": {
     "@joyday/vue-loop-scroll": "1.0.2"
   },
-  "changesets": []
+  "changesets": [
+    "gold-rabbits-allow",
+    "little-horses-spend"
+  ]
 }
