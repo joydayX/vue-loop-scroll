@@ -42,9 +42,13 @@ yarn add @joyday/vue-loop-scroll
 
 ### 2. Step-by-Step Pause
 
+#### Item-based Pause
+
 ![Step-by-Step Pause-1](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%8D%95%E6%AD%A5%E6%BB%9A%E5%8A%A8%E5%81%9C%E9%A1%BF-1.gif?updatedAt=1744700886956)
 
 ![Step-by-Step Pause-2](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E5%8D%95%E6%AD%A5%E6%BB%9A%E5%8A%A8%E5%81%9C%E9%A1%BF-2.gif?updatedAt=1744700886365)
+
+#### Page-based Pause
 
 ![Step-by-Step Pause-3](https://ik.imagekit.io/uxo1w62ii/npm/vue-loop-scroll/%E6%BB%9A%E5%8A%A8%E5%81%9C%E9%A1%BF-%E6%8C%89%E9%A1%B5%E6%BB%9A%E5%8A%A8.gif?updatedAt=1744700948853)
 
@@ -60,14 +64,15 @@ The basic usage of the component.
 
 ```html
 <script setup lang="ts">
+  import { ref } from "vue";
   import { LoopScroll } from "@joyday/vue-loop-scroll";
 
-  const dataSource = [
+  const dataSource = ref([
     "1. scrolling scrolling scrolling",
     "2. scrolling scrolling scrolling",
     "3. scrolling scrolling scrolling",
     "4. scrolling scrolling scrolling",
-  ];
+  ]);
 </script>
 
 <template>
@@ -94,14 +99,15 @@ You can customize the rendering content using `slot`.
 
 ```html
 <script setup lang="ts">
+  import { ref } from "vue";
   import { LoopScroll } from "@joyday/vue-loop-scroll";
 
-  const dataSource = [
+  const dataSource = ref([
     "1. scrolling scrolling scrolling",
     "2. scrolling scrolling scrolling",
     "3. scrolling scrolling scrolling",
     "4. scrolling scrolling scrolling",
-  ];
+  ]);
 </script>
 
 <template>
@@ -132,12 +138,15 @@ You can pass scrolling direction, pause time per step, and specify a unique key 
 
 ```html
 <script setup lang="ts">
+  import { ref } from "vue";
   import { LoopScroll } from "@joyday/vue-loop-scroll";
 
-  const dataSource = Array.from({ length: 4 }, (_, index) => ({
-    id: index + 1,
-    value: "scrolling scrolling",
-  }));
+  const dataSource = ref(
+    Array.from({ length: 4 }, (_, index) => ({
+      id: index + 1,
+      value: "scrolling scrolling",
+    })),
+  );
 </script>
 
 <template>
