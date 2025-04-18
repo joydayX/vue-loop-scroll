@@ -50,9 +50,6 @@ const scrollItems = shallowRef<ScrollItems<T>>([]);
 /** 单步移动基数（像素/帧） */
 const STEP_SIZE = 1;
 
-/** 缓存的最近一次渲染数据（用于数据对比优化） */
-let cachedScrollItems: ScrollItems<T> | null = null;
-
 /** 延迟等待 Promise 实例 */
 let delayTaskPromise: DelayTaskPromise | null;
 
@@ -299,7 +296,6 @@ const resetScrollState = () => {
   stopAllEffects(); // 停止所有动画效果
   resetState(); // 重置滚动状态
   itemPositions = []; // 清空位置缓存
-  cachedScrollItems = null; // 清空缓存数据
 };
 
 /**
@@ -827,6 +823,13 @@ const initializeScrollProcess = async () => {
 };
 
 /**
+ * 将原始数据映射为滚动项数据
+ * @description 接收一个数据数组，并通过 createScrollItem 函数转换为 scrollItems 所需的格式
+ */
+const mapToScrollItems = (data: T[]) =>
+  data.map((item) => createScrollItem(item));
+
+/**
  * 验证列表是否具备可滚动性
  * @returns 是否满足可滚动条件
  * @description 通过分批次加载数据检测内容尺寸
@@ -834,6 +837,8 @@ const initializeScrollProcess = async () => {
 const validateScrollCapability = async () => {
   const maxLoadBatches = Math.ceil(props.dataSource.length / props.loadCount);
   let currentBatch = 0;
+  const cachedScrollItems = scrollItems.value;
+
   while (currentBatch++ < maxLoadBatches) {
     const partialData = props.dataSource.slice(
       0,
@@ -843,14 +848,18 @@ const validateScrollCapability = async () => {
       partialData.reverse();
     }
 
-    scrollItems.value = partialData.map((item) => createScrollItem(item));
+    scrollItems.value = mapToScrollItems(partialData);
 
     await executeNextTick();
 
     updateContainerMetrics();
 
-    if (isScrollable.value) return true;
+    if (isScrollable.value) {
+      scrollItems.value = cachedScrollItems;
+      return true;
+    }
   }
+  scrollItems.value = mapToScrollItems(props.dataSource);
   return false;
 };
 
@@ -866,26 +875,14 @@ onMounted(() => {
           cancelNextTick();
         }
 
-        // 缓存当前状态用于回滚
-        if (!cachedScrollItems) {
-          cachedScrollItems = scrollItems.value;
-        }
-
         if (state.isScrolling) {
           stopAllEffects(); // 停止所有动画
         }
 
         // 验证滚动能力
         if (!(await validateScrollCapability())) {
-          cachedScrollItems = null;
           resetScrollState();
           return;
-        }
-
-        // 恢复有效缓存数据
-        if (cachedScrollItems) {
-          scrollItems.value = cachedScrollItems;
-          cachedScrollItems = null;
         }
 
         // 根据当前滚动状态选择处理方式

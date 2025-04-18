@@ -70,6 +70,14 @@ describe("LoopScroll", () => {
 
     // Wait for component to update
     expect(wrapper.findAll(".scroll-loop-item").length).toBe(dataSource.length);
+
+    // clear dataSource
+
+    wrapper.setProps({ dataSource: [] });
+
+    await flushPromises();
+
+    expect(wrapper.findAll(".scroll-loop-item").length).toBe(0);
   });
 
   // Test prop: direction
