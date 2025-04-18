@@ -1,5 +1,19 @@
 # @joyday/vue-loop-scroll
 
+## 1.1.1
+
+### Patch Changes
+
+- fix: list does not clear when data-source is emptied.
+- fix: list does not clear when data-source is emptied
+
+## 1.1.1-rc.0
+
+### Patch Changes
+
+- fix: list does not clear when data-source is emptied.
+- fix: list does not clear when data-source is emptied
+
 ## 1.1.0
 
 ### Minor Changes
