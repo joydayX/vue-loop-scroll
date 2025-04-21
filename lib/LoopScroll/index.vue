@@ -47,9 +47,6 @@ const scrollTrackRef = ref<HTMLElement | null>(null);
 /** 实际渲染的列表数据 */
 const scrollItems = shallowRef<ScrollItems<T>>([]);
 
-/** 单步移动基数（像素/帧） */
-const STEP_SIZE = 1;
-
 /** 延迟等待 Promise 实例 */
 let delayTaskPromise: DelayTaskPromise | null;
 
@@ -119,6 +116,11 @@ const transformStyle = computed(() => {
 
 /** 判断是否需要暂停滚动 */
 const shouldPause = computed(() => props.waitTime > 0);
+
+/* 计算当前帧的滚动量，范围从最小正数到视口大小（viewportSize）*/
+const frameOffset = computed(() =>
+  Math.max(Math.min(props.speed, viewportSize.value), Number.MIN_VALUE),
+);
 
 /* ------------------------------ hook ------------------------------ */
 /** 带取消功能的 nextTick */
@@ -484,12 +486,6 @@ const startScrollAnimation = async (initialPause = true) => {
   // 设置为正在滚动的状态
   state.isScrolling = true;
 
-  // 计算当前帧的滚动量，范围从1到视口大小（viewportSize）
-  const frameOffset = Math.max(
-    Math.min(STEP_SIZE * props.speed, viewportSize.value),
-    1,
-  );
-
   // 如果当前处于暂停状态，直接返回
   if (state.isPaused) return;
 
@@ -557,9 +553,9 @@ const startScrollAnimation = async (initialPause = true) => {
    */
   const performScrollStep = async () => {
     // 更新当前的滚动偏移量
-    state.scrollOffset += frameOffset;
-    accumulatedOffset += frameOffset;
-    state.scrollOffsetInPageMode += frameOffset;
+    state.scrollOffset += frameOffset.value;
+    accumulatedOffset += frameOffset.value;
+    state.scrollOffsetInPageMode += frameOffset.value;
 
     // 检测是否越过了某个项的边界，返回是否越界、剩余偏移量和下一个项的索引
     const { hasCrossedItem, remainingOffset, nextItemIndex } =
