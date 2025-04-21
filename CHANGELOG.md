@@ -1,5 +1,11 @@
 # @joyday/vue-loop-scroll
 
+## 1.1.2
+
+### Patch Changes
+
+- fix: prevent setting scroll speed to a value less than 1
+
 ## 1.1.1
 
 ### Patch Changes
