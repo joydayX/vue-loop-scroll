@@ -1,5 +1,11 @@
 # @joyday/vue-loop-scroll
 
+## 1.1.3
+
+### Patch Changes
+
+- fallback to JSON.stringify(item) as itemKey when not provided
+
 ## 1.1.2
 
 ### Patch Changes
@@ -67,9 +73,3 @@
 ### Major Changes
 
 - af0541b: init rc publish
-
-## 2.0.0-rc.0
-
-### Major Changes
-
-- 5aa4f19: initial implementation
