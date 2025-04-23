@@ -185,10 +185,10 @@ const cancelDelayedWait = () => {
  * @returns 唯一标识字符串（优先使用 itemKey 配置项，其次尝试序列化整个对象）
  * @throws 当数据项序列化失败时返回空字符串
  */
-const getItemKey = (item: T) => {
+const getItemKey = (item: T): string => {
   try {
-    if (isPlainObject(item)) {
-      return props.itemKey ? String(item[props.itemKey]) : "";
+    if (isPlainObject(item) && props.itemKey && item[props.itemKey] != null) {
+      return String(item[props.itemKey]);
     }
     return JSON.stringify(item);
   } catch (_e) {
