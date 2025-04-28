@@ -1,3 +1,5 @@
+import { withResolvers } from ".";
+
 type DelayResult = boolean;
 
 export type DelayTaskPromise = Promise<DelayResult> & {
@@ -13,7 +15,7 @@ const cancelStore = new WeakMap<DelayTaskPromise, () => void>();
 
 function createDelayTask(ms: number, callback?: () => void): DelayTaskPromise {
   let isRunning = true;
-  const { resolve, promise } = Promise.withResolvers<DelayResult>();
+  const { resolve, promise } = withResolvers<DelayResult>();
 
   const done = () => {
     resolve(false);
