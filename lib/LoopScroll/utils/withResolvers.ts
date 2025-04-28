@@ -4,7 +4,7 @@ interface PromiseResolvers<T> {
   reject: (reason?: any) => void;
 }
 
-function withResolvers<T>(): PromiseResolvers<T> {
+export function withResolvers<T>(): PromiseResolvers<T> {
   let resolve!: (value: T | PromiseLike<T>) => void;
   let reject!: (reason?: any) => void;
 
@@ -14,9 +14,4 @@ function withResolvers<T>(): PromiseResolvers<T> {
   });
 
   return { promise, resolve, reject };
-}
-
-// 直接执行 polyfill
-if (!("withResolvers" in Promise)) {
-  (Promise as any).withResolvers = withResolvers;
 }
