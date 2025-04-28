@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "rc",
+  "initialVersions": {
+    "@joyday/vue-loop-scroll": "1.1.3"
+  },
+  "changesets": [
+    "late-heads-press"
+  ]
+}

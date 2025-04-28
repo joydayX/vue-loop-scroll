@@ -1,5 +1,11 @@
 # @joyday/vue-loop-scroll
 
+## 1.1.4-rc.0
+
+### Patch Changes
+
+- fix: resolve compatibility issue with Promise.withResolvers
+
 ## 1.1.3
 
 ### Patch Changes
